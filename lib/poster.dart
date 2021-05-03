@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:dropdownfield/dropdownfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,13 +16,40 @@ class PosterPage extends StatefulWidget {
 class _PosterPageState extends State<PosterPage> {
 
   final TextEditingController _filter = new TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   final dio = new Dio();
   String _searchText = "";
   List names = new List();
   List pathname =new List();
   List filteredNames = new List();
   Icon _searchIcon = new Icon(Icons.search);
+  Map<String, dynamic> formData;
+  List<String> searchhints = [
+    'The Birds',
+    'Rear Window',
+    'Family Pot',
+    'Rear Window',
+  ];
+
   Widget _appBarTitle = new Text( 'Search Example' );
+
+  _PosterPageState() {
+    formData = {
+      'Search': 'The Birds',
+    };
+    _filter.addListener(() {
+      if (_filter.text.isEmpty) {
+        setState(() {
+          _searchText = "";
+          filteredNames = names;
+        });
+      } else {
+        setState(() {
+          _searchText = _filter.text;
+        });
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -118,6 +146,7 @@ class _PosterPageState extends State<PosterPage> {
         onPressed: _searchPressed,
       ),
     );
+
   }
 
 
@@ -125,12 +154,13 @@ class _PosterPageState extends State<PosterPage> {
     setState(() {
       if (this._searchIcon.icon == Icons.search) {
         this._searchIcon = new Icon(Icons.close);
-        this._appBarTitle = new TextField(
+        this._appBarTitle = new  TextField(
           style: TextStyle(color: Colors.white),
           controller: _filter,
           decoration: new InputDecoration(
               prefixIcon: new Icon(Icons.search,color: Colors.white,),
               hintText: 'Search...',
+              helperText: 'hello',
               fillColor: Colors.white10, filled: true
           ),
         );
